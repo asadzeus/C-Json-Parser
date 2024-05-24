@@ -1,0 +1,31 @@
+    
+[
+    {
+    "name" : "alper",
+    "surname": "ertugrul",
+    "age": 20,
+    "available": false
+    },
+
+    {
+        "name": "huda",
+        "surname": "yilmaz",
+        "age": 21,
+        "available": false
+    },
+
+    {
+        "name": "eren",
+        "surname": "ertugrul",
+        "age": 19,
+        "available": true
+    },
+
+    {
+        "name": "firat",
+        "surname": "ertugrul",
+        "age": 15,
+        "available": false
+    }
+
+]
