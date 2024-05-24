@@ -3,7 +3,7 @@
 #include <map>
 #include <cctype>
 
-#define maks 10
+#define max 10
 using namespace std;
 
 struct jsonvalue
@@ -17,7 +17,7 @@ class myjsonparser
 {
 private:
     int currindex;
-    int startindexes[maks];
+    int startindexes[max];
     bool line = true;
 
     void skipWhitespace()
@@ -36,12 +36,11 @@ private:
         {
             currindex++;
             skipWhitespace();
-            if (json[currindex] == '}' && json[currindex + 1] == ',')
+            if (json[currindex] == '}')
             {
                 count++;
             }
         }
-        count++;
 
         return count;
     }
@@ -63,25 +62,12 @@ private:
         }
     }
 
-    bool parseValue()
+    void parseObjects()
     {
-        objcount = objCount();
-
-        getStartingIndexes();
-        all();
-
-        return true;
-    }
-
-    string all()
-    {
-        string str;
         string label;
 
         for (int i = 0; i < objcount; i++)
         {
-          //  cout << "******** New Object ********" << endl;
-
             line = true;
             currindex = startindexes[i];
 
@@ -91,9 +77,8 @@ private:
                 skipWhitespace();
 
                 if (json[currindex] == '"' && line)
-                {        
+                {
                     label = getLabel(json, i);
-                //    cout << "---------------------" << endl;
                 }
 
                 if (json[currindex] == ',')
@@ -102,8 +87,6 @@ private:
                 }
             }
         }
-
-        return str;
     }
 
     void check(string label, int i)
@@ -126,17 +109,7 @@ private:
 
         else if (json.substr(currindex, 5) == "false" || json.substr(currindex, 4) == "true")
         {
-            if (json.substr(currindex, 5) == "false")
-            {
-                bl = false;
-                currindex += 5;
-            }
-            else if (json.substr(currindex, 4) == "true")
-            {
-                bl = true;
-                currindex += 4;
-            }
-
+            bl = getBool();
             objects[i].bools.insert({label, bl});
         }
     }
@@ -163,7 +136,6 @@ private:
         currindex++;
         skipWhitespace();
 
-      //  cout << "Label: " << label << endl;
         check(label, i);
         return label;
     }
@@ -191,7 +163,6 @@ private:
     {
 
         string item;
-      //  currindex = start;
 
         while (!isdigit(json[currindex]))
         {
@@ -210,15 +181,35 @@ private:
         return stoi(item);
     }
 
+    bool getBool()
+    {
+        bool bl;
+
+        if (json.substr(currindex, 5) == "false")
+        {
+            bl = false;
+            currindex += 5;
+        }
+        else if (json.substr(currindex, 4) == "true")
+        {
+            bl = true;
+            currindex += 4;
+        }
+
+        return bl;
+    }
+
 public:
     int objcount;
-    jsonvalue objects[maks];
+    jsonvalue objects[max];
     string json;
 
     void parseFile(const string &jsontext)
     {
         json = jsontext;
         currindex = 0;
-        parseValue();
+        objcount = objCount();
+        getStartingIndexes();
+        parseObjects();
     }
 };
